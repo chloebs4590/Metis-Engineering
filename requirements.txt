@@ -1,0 +1,4 @@
+pandas
+pydeck
+Config
+streamlit==1.2
