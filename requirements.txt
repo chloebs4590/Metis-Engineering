@@ -1,4 +1,4 @@
-pandas
-pydeck
-Config
-streamlit==1.2
+config=0.5.1
+pandas=1.3.5
+pydeck=0.7.1
+streamlit==1.8.1
