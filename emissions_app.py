@@ -42,8 +42,6 @@ st.title('Passenger Train vs Car Emissions')
 st.markdown(
     '''
     The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel in the U.S.
-    An inspiration for this project was [this web app](https://share.streamlit.io/ninaksweeney/flight_emissions/main/flight_emissions_app.py) 
-    on the carbon footprint of flying, which was created by a fellow Metis bootcamp student.
 
     **User instructions:**  
     * Select an origin city, train route, and desination city  
@@ -189,5 +187,8 @@ st.markdown('''
     * Emissions data come from the [Climatiq.io API](https://www.climatiq.io/) and the primary source is the EPA. Both train and vehicle emissions reflect per passenger amounts.       
     * Amtrak station locations come from the [Homeland Infrastructure Foundation-Level Data (HIFLD)](https://hifld-geoplatform.opendata.arcgis.com/datasets/amtrak-stations/explore?location=29.200042%2C71.570775%2C3.00)
       and train routes come from both [Amtrak.com](https://www.amtrak.com/train-routes) and the [Wikipedia page](https://en.wikipedia.org/wiki/List_of_Amtrak_routes).
+    
+    An inspiration for this project was [this web app](https://share.streamlit.io/ninaksweeney/flight_emissions/main/flight_emissions_app.py) 
+    on the carbon footprint of flying, which was created by a fellow Metis bootcamp student.
 
 ''')
