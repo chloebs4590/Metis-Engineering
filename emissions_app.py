@@ -176,7 +176,7 @@ for item in route_raw_list:
   else:
     route_raw_list_rev.append(item)
 route_display = '\n'.join(str(n)+". "+ c for n, c in enumerate(route_raw_list_rev, 1))
-st.text_area('Route:', route_display)
+st.text_area('Route selected:', route_display)
 
 for i in range(3):  
     st.text("")
