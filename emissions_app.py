@@ -222,7 +222,7 @@ st.markdown('''
     * Distances are calculated using [Google's Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix), which allows one to specify the mode/travel mode (in this case, driving or train).
     * Emissions data come from the [Climatiq.io API](https://www.climatiq.io/) and the primary source is the EPA. Both train and vehicle emissions reflect per passenger amounts.       
     * Amtrak station locations come from the [Homeland Infrastructure Foundation-Level Data (HIFLD)](https://hifld-geoplatform.opendata.arcgis.com/datasets/amtrak-stations/explore?location=29.200042%2C71.570775%2C3.00)
-      and train routes come from both [Amtrak.com](https://www.amtrak.com/train-routes) and this [Wikipedia page](https://en.wikipedia.org/wiki/List_of_Amtrak_routes).
+      and train routes come from both [Amtrak.com](https://www.amtrak.com/train-routes) and [this Wikipedia page](https://en.wikipedia.org/wiki/List_of_Amtrak_routes).
     
     An inspiration for this project was [this web app](https://share.streamlit.io/ninaksweeney/flight_emissions/main/flight_emissions_app.py) 
     on the carbon footprint of flying, which was created by a fellow Metis bootcamp student.
