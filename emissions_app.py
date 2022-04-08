@@ -94,7 +94,7 @@ try:
   if dest_idx > origin_idx:
     trains_distance = sum(list(route_df.distance_mi)[origin_idx:dest_idx+1])
   elif origin_idx > dest_idx:
-    trains_distance = sum(list(route_df.distance_mi)[dest_idx:origin_idx])
+    trains_distance = sum(list(route_df.distance_mi)[dest_idx+1:origin_idx])
   else:
     trains_distance = route_df.iloc[origin_idx,12]
 except:
@@ -105,7 +105,7 @@ try:
   if dest_idx > origin_idx:
     trains_emissions = sum(list(route_df.co2e_kg_round)[origin_idx:dest_idx+1])
   elif origin_idx > dest_idx:
-    trains_emissions = sum(list(route_df.co2e_kg_round)[dest_idx:origin_idx])
+    trains_emissions = sum(list(route_df.co2e_kg_round)[dest_idx+1:origin_idx])
   else:
     trains_emissions = route_df.iloc[origin_idx,12]
 except:
