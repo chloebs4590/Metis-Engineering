@@ -43,7 +43,7 @@ st.title('Rail or Road?')
 
 st.markdown(
     '''
-    The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel between cities serviced by Amtrak.
+    The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel between cities serviced by the same Amtrak route.
 
     **User instructions:**  
     1. Select an origin city
