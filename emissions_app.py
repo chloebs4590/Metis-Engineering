@@ -39,7 +39,7 @@ cars_emissions = retrieving_cars_data()
 url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/train_emissions_42.csv"
 trains_emissions = pd.read_csv(url)
 
-st.title('To Rail or To Road?')
+st.title('Rail or Road?')
 
 st.markdown(
     '''
