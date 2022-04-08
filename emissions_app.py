@@ -1,21 +1,23 @@
+import config
 import pandas as pd
-import pydeck as pdk
 import pymongo
 from pymongo import MongoClient
 import streamlit as st
 
-# Part 1: Data Setup
-# Part 1a: cars emissions data
+#this will make the web app easier to read
+st.set_page_config(layout="wide")
 
-#connect to cloud Mongodb server
+###Read in car emissions data from database on the cloud
+
+#connect to cloud MongoDB server
 uri = 'mongodb://udunkhpo2nmne8de5ygi:37Ke4KMMHIcBlSPVlmYL@bitnqlsaoiuc1yk-mongodb.services.clever-cloud.com:27017/bitnqlsaoiuc1yk'
 client = MongoClient( uri )
 
 # MongoDB connection info
 hostname = 'bitnqlsaoiuc1yk-mongodb.services.clever-cloud.com'
 port = 27017
-username = st.secrets["db_username"]
-password = st.secrets["db_password"]
+username = st.secrets[DB_]
+password = st.secrets["mongodb_password"]
 databaseName = 'bitnqlsaoiuc1yk'
 
 # authenticate the database
@@ -26,12 +28,12 @@ db = client[databaseName]
 #read data from the database into dataframe
 @st.cache(allow_output_mutation=True, suppress_st_warning=True, hash_funcs={"MyUnhashableClass": lambda _: None})
 def retrieving_cars_data():
-    return pd.DataFrame(list(db.cars_emission_gmaps.find({})))
+    return pd.DataFrame(list(db.cars_emission_gmaps_rev.find({})))
 
-#this dataframe will be used to calculate vehicle emissions
+#this dataframe will be used to calculate vehicle distance and emissions
 cars_emissions = retrieving_cars_data()
 
-# Part 1b: trains emissions data
+###Read in train emissions data a csv file saved in this project's Github repo
 
 # since this dataset is much smaller, it's stored in a CSV on Github and has to be read in as raw
 url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/train_emissions_42.csv"
@@ -41,33 +43,36 @@ st.title('Passenger Train vs Car Emissions')
 
 st.markdown(
     '''
-    The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel in the U.S.
+    The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel between cities serviced by Amtrak.
 
     **User instructions:**  
-    * Select an origin city, train route, and desination city  
-    * After making those selections, find the distance and emissions **per passenger** by train versus car below the map showing all cities with Amtrak stations
-    * View a zoomed-in map that plots the cities on the Amtrak route between the origin and destination cities and a list of the cities in the entire route
+    1. Select an origin city
+    2. Select an Amtrak route 
+    3. Select a destination city
+    4. View the distance and emissions **per passenger** by train versus car
+    5. View and/or zoom in on a map that plots the cities on the Amtrak route between the origin and destination cities
     
     ''')
 
-# Part 2 - drop-down lists, selection and data filtering
+###Set up selection boxes in side bar
 
-# setup first drop-down list for origin location
-default_value_city = 'Select or type location'
-origin_list = [default_value_city] + sorted(trains_emissions.origin_location.unique())
+# setup first drop-down list for origin and destination locations
+default_value_origin_city = 'Select or type location'
+origin_list = [default_value_origin_city] + sorted(trains_emissions.origin_location.unique())
+default_value_route = ""
+default_value_dest_city = ""
 
 #create origin city selection
 origin_choice = st.sidebar.selectbox('Origin city', origin_list, index=0)
 
 #after city choice is chosen, filter route options based on the route(s) in which city is found
 origin_indices = [idx for idx,loc in enumerate(trains_emissions.origin_location) if loc == origin_choice]
-routes = [trains_emissions.iloc[idx,11] for idx in origin_indices]
+routes = [trains_emissions.iloc[idx,10] for idx in origin_indices]
 route_list = [""] + sorted(list(set(routes)))
 route_choice = st.sidebar.selectbox('Route', route_list, index=0)
-#st.sidebar.write('Route selected:', route_choice)
 
 # after route is chosen, filter destination options to show only those in selected route
-route_df = trains_emissions[trains_emissions.route_locations == route_choice].reset_index(drop=True)
+route_df = trains_emissions[trains_emissions.route == route_choice].reset_index(drop=True)
 try:
   origin_idx = route_df[route_df['origin_location']==origin_choice].index.values.astype(int)[0]
 except:
@@ -76,16 +81,10 @@ destinations = route_df[route_df.dest_location != origin_choice]['dest_location'
 destinations_list = [""] + sorted(list(set(destinations)))
 dest_choice = st.sidebar.selectbox('Destination city', destinations_list, index=0)
 
-# base map
-stations_data_url = 'https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/stations_locations.csv'
-stations_locations = pd.read_csv(stations_data_url)
-stations_locations['lon'] = stations_locations['origin_long']
-stations_locations['lat'] = stations_locations['origin_lat']
-st.map(stations_locations[['lat','lon']],zoom=3)
 
-# calculate and show distance (in miles) and c02 emissions (in kg)
+###Calculate and show distance and emissions by train versus car
+
 # first, for trains
-
 # distance
 try:
   dest_idx = route_df[route_df.dest_location == dest_choice].index.values.astype(int)[0]
@@ -113,7 +112,6 @@ except:
   pass
 
 #second, for cars
-
 # distance
 try:
   cars_distance = cars_emissions.loc[((cars_emissions.origin_location == origin_choice)&(cars_emissions.dest_location == dest_choice))\
@@ -128,18 +126,72 @@ try:
 except:
   pass
 
+###Create and show a list of cities that train passes through, including origin and destination
+
+# origin idx
+try:
+  if len(route_df[route_df['origin_location']==origin_choice].index.values.astype(int)) > 1:
+    origin_idx_route_tr = route_df[route_df['origin_location']==origin_choice].index.values.astype(int)[1]
+  else:
+    origin_idx_route_tr = route_df[route_df['origin_location']==origin_choice].index.values.astype(int)[0]
+except:
+  pass
+
+# dest idx
+try:
+  dest_idx_route_tr = route_df[route_df['dest_location']==dest_choice].index.values.astype(int)[0]
+except:
+  pass
+
+# names of cities in filtered route
+try:
+  if dest_idx_route_tr > origin_idx_route_tr:
+    train_route_display_list = route_df.iloc[origin_idx_route_tr:dest_idx_route_tr+2,][['origin_location']].values.flatten().tolist()
+    train_route_display = '\n'.join(str(n)+". "+ c for n, c in enumerate(train_route_display_list, 1))
+  elif origin_idx_route_tr > dest_idx_route_tr:
+    train_route_display_list = route_df.iloc[dest_idx_route_tr+1:origin_idx_route_tr+1,][['origin_location']].values.flatten().tolist()[::-1]
+    train_route_display = '\n'.join(str(n)+". "+ c for n, c in enumerate(train_route_display_list, 1))
+  else:
+    train_route_display_list = route_df.iloc[origin_idx_route_tr:dest_idx_route_tr+2,][['origin_location']].values.flatten().tolist()
+    train_route_display = '\n'.join(str(n)+". "+ c for n, c in enumerate(train_route_display_list, 1))
+except:
+  pass
+
 col1, col2 = st.columns(2)
 try:
   with col1:
-    st.subheader(f'Train distance: {trains_distance:.0f} miles')
-    st.subheader(f'Train emissions: {trains_emissions:.0f} kg')
+    st.subheader(f'Train results...')
+    st.write(f'**Distance**: {trains_distance:.0f} miles')
+    st.write(f'**Carbon Emissions**: {trains_emissions:.0f} kg')
+    st.text_area('Cities in route:', train_route_display)
 except:
   pass
 
 try:
   with col2:
-    st.subheader(f'Car distance: {cars_distance:.0f} miles')
-    st.subheader(f'Car emissions: {cars_emissions:.0f} kg')
+    st.subheader(f'Car results...')
+    st.write(f'**Distance**: {cars_distance:.0f} miles')
+    st.write(f'**Carbon Emissions**: {cars_emissions:.0f} kg')
+    st.write("The exact route is unknown; Google's Distance Matrix API (which was used to calculate distance) returns distance based on the recommended route between start and end points, as calculated by the Google Maps API.")
+except:
+  pass
+
+for i in range(3):  
+    st.text("")
+
+###Show map, first of all cities in which Amtrak is located and then filtered down and zoomed into cities on the train route
+
+# base map
+stations_data_url = 'https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/stations_locations.csv'
+stations_locations = pd.read_csv(stations_data_url)
+stations_locations['lon'] = stations_locations['origin_long']
+stations_locations['lat'] = stations_locations['origin_lat']
+try:
+  if dest_choice == default_value_dest_city:
+    st.map(zoom=3)
+    #st.map(stations_locations[['lat','lon']],zoom=3)
+  else:
+    pass
 except:
   pass
 
@@ -147,15 +199,12 @@ except:
 route_df['lat'] = route_df['origin_lat']
 route_df['lon'] = route_df['origin_lon']
 try:
-  if dest_idx > origin_idx:
-    route_df_filtered = route_df.iloc[origin_idx:dest_idx+1,]
-    #route_df_filtered = route_df.filter(items = [origin_idx,dest_idx+1], axis=0)
-  elif origin_idx > dest_idx:
-    route_df_filtered = route_df.iloc[dest_idx+1:origin_idx,]
-    #route_df_filtered = route_df.filter(items = [dest_idx+1, origin_idx], axis=0)
+  if dest_idx_route_tr > origin_idx_route_tr:
+    route_df_filtered = route_df.iloc[origin_idx_route_tr:dest_idx_route_tr+2,]
+  elif origin_idx_route_tr > dest_idx_route_tr:
+    route_df_filtered = route_df.iloc[dest_idx_route_tr+1:origin_idx_route_tr+1,]
   else:
-    route_df_filtered = route_df.iloc[origin_idx:dest_idx+1,]
-    #route_df_filtered = route_df.filter(items = [origin_idx, dest_idx+1], axis=0)
+    route_df_filtered = route_df.iloc[origin_idx_route_tr:dest_idx_route_tr+2,]
 except:
   pass
 try:
@@ -163,25 +212,12 @@ try:
 except:
   pass
 
-# show selected route below distance and emissions
-route_raw_list = route_choice.split(';')
-route_raw_list = [item.strip() for item in route_raw_list]
-route_raw_list_rev = []
-for item in route_raw_list:
-  if ':' in item:
-    item = item[item.find(':')+2:]
-    route_raw_list_rev.append(item)
-  else:
-    route_raw_list_rev.append(item)
-route_display = '\n'.join(str(n)+". "+ c for n, c in enumerate(route_raw_list_rev, 1))
-st.text_area('Cities in route selected:', route_display)
-
 for i in range(3):  
     st.text("")
 
 st.markdown('''     
 
-    About the data:
+    **About the data:**
  
     * Distances are calculated using [Google's Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix), which allows one to specify the mode/travel mode (in this case, driving or train).
     * Emissions data come from the [Climatiq.io API](https://www.climatiq.io/) and the primary source is the EPA. Both train and vehicle emissions reflect per passenger amounts.       
