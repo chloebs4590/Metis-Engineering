@@ -36,7 +36,7 @@ cars_emissions = retrieving_cars_data()
 ###Read in train emissions data a csv file saved in this project's Github repo
 
 # since this dataset is much smaller, it's stored in a CSV on Github and has to be read in as raw
-url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/train_emissions_42.csv"
+url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/train_emissions_42_rev.csv"
 trains_emissions = pd.read_csv(url)
 
 st.title('Rail or Road?')
