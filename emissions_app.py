@@ -16,8 +16,8 @@ client = MongoClient( uri )
 # MongoDB connection info
 hostname = 'bitnqlsaoiuc1yk-mongodb.services.clever-cloud.com'
 port = 27017
-username = st.secrets[DB_]
-password = st.secrets["mongodb_password"]
+username = st.secrets["db_username"]
+password = st.secrets["db_password"]
 databaseName = 'bitnqlsaoiuc1yk'
 
 # authenticate the database
