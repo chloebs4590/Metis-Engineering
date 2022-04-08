@@ -69,7 +69,7 @@ origin_choice = st.sidebar.selectbox('Origin city', origin_list, index=0)
 origin_indices = [idx for idx,loc in enumerate(trains_emissions.origin_location) if loc == origin_choice]
 routes = [trains_emissions.iloc[idx,10] for idx in origin_indices]
 route_list = [""] + sorted(list(set(routes)))
-route_choice = st.sidebar.selectbox('Route', route_list, index=0)
+route_choice = st.sidebar.selectbox('Amtrak Route', route_list, index=0)
 
 # after route is chosen, filter destination options to show only those in selected route
 route_df = trains_emissions[trains_emissions.route == route_choice].reset_index(drop=True)
