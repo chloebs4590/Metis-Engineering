@@ -45,7 +45,7 @@ st.markdown(
     '''
     The purpose of this web app is to allow users to compare the carbon footprint of train versus car travel between cities serviced **by the same Amtrak route**.
     
-    **Note**: The destination city options reflect a simplified version of the true Amtrak network, since the web app does not account for the ability to transfer between routes.
+    **Note**: The destination city options reflect a simplified version of the true Amtrak network, since the web app design does not account for the ability to transfer between routes.
 
     **User instructions:**  
     1. Select an origin city
