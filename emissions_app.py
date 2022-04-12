@@ -186,7 +186,7 @@ col1, col2 = st.columns(2)
 try:
   with col1:
     st.subheader(f'Train results...')
-    st.write(f'Distance: {trains_distance:.0f} miles')
+    st.write(f'**Distance**: {trains_distance:.0f} miles')
     st.write(f'**Carbon emissions**: {trains_emissions:.0f} kg')
     st.write(f'**Carbon emissions per mile**: {trains_emissions_per_mile:.2f} kg')
     st.text_area('Cities in route:', train_route_display)
@@ -196,7 +196,7 @@ except:
 try:
   with col2:
     st.subheader(f'Car results...')
-    st.write(f'Distance: {cars_distance:.0f} miles')
+    st.write(f'**Distance**: {cars_distance:.0f} miles')
     st.write(f'**Carbon emissions**: {cars_emissions:.0f} kg')
     st.write(f'**Carbon emissions per mile**: {cars_emissions_per_mile:.2f} kg')
 except:
