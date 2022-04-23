@@ -1,6 +1,6 @@
 ### Background
 
-The goal of this project was to build a web that would allow climate-conscious individuals - specifically those looking for alternative modes of travel to flying - to compare the carbon emissions of passenger train travel versus passenger vehicle travel between cities serviced by Amtrak. To that end, I created <a href=\"https://share.streamlit.io/chloebs4590/metis-engineering/main/emissions_app.py\">Rail or Road?</a>, an interactive web app that allows users to select an origin city, destination city and Amtrak route and compare the distance in miles and carbon emissions of traveling between these two cities by train or car.\n",
+The goal of this project was to build a web that would allow climate-conscious individuals - specifically those looking for alternative modes of travel to flying - to compare the carbon emissions of passenger train travel versus passenger vehicle travel between cities serviced by Amtrak. To that end, I created [Rail or Road?](https://share.streamlit.io/chloebs4590/metis-engineering/main/emissions_app.py),an interactive web app that allows users to select an origin city, destination city and Amtrak route and compare the distance in miles and carbon emissions of traveling between these two cities by train or car.
 
 ### Data Engineering Pipeline
 
