@@ -28,7 +28,7 @@ db = client[databaseName]
 #read data from the database into dataframe
 @st.cache(allow_output_mutation=True, suppress_st_warning=True, hash_funcs={"MyUnhashableClass": lambda _: None})
 def retrieving_cars_data():
-    return pd.DataFrame(list(db.cars_emission_gmaps_rev.find({})))
+    return pd.DataFrame(list(db.cars_emission_gmaps_fin.find({})))
 
 #this dataframe will be used to calculate vehicle distance and emissions
 cars_emissions = retrieving_cars_data()
@@ -36,7 +36,7 @@ cars_emissions = retrieving_cars_data()
 ###Read in train emissions data a csv file saved in this project's Github repo
 
 # since this dataset is much smaller, it's stored in a CSV on Github and has to be read in as raw
-url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/trains_emissions_46.csv"
+url = "https://raw.githubusercontent.com/chloebs4590/Metis-Engineering/main/train_emissions_46.csv"
 trains_emissions = pd.read_csv(url)
 
 st.title('Rail or Road?')
